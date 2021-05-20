@@ -6,19 +6,37 @@
 
 Sanitize and Execute your raw SQL queries in ActiveRecord and Rails with a much more intuitive and shortened syntax.
 
+# Installation
+
+```ruby
+gem 'active_record_simple_execute'
+```
+
 ## Comparison with Plain ActiveRecord
 
 As seen here using `simple_execute` is much easier to remember than all the hoops plain ActiveRecord makes you jump through.
 
-**Using Simple Execute**
+### Using Simple Execute
 ```ruby
-records = ActiveRecord::Base.simple_execute(sql_str, company_id: @company.id, @user.id)
+sql_str = <<~SQL.squish
+  SELECT * FROM orders
+  FROM orders 
+  WHERE orders.company_id = :company_id AND orders.updated_by_user_id = :user_id
+SQL
+
+records = ActiveRecord::Base.simple_execute(sql_str, company_id: @company.id, user_id: @user.id)
 ```
 
-**Using Plain ActiveRecord Syntax**
+### Using Plain ActiveRecord Syntax
 ```ruby
+sql_str = <<~SQL.squish
+  SELECT * 
+  FROM orders 
+  WHERE orders.company_id = :company_id AND orders.updated_by_user_id = :user_id
+SQL
+
 ### must use send because this method is private is Rails 5.1 only, Public in 5.0 and 5.2
-sanitized_sql = ActiveRecord::Base.sanitize_sql_array([sql_str, **sql_vars])
+sanitized_sql = ActiveRecord::Base.sanitize_sql_array([sql_str, company_id: @company.id, user_id: @user.id])
 
 results = ActiveRecord::Base.connection.execute(sanitized_sql)
 
@@ -41,35 +59,6 @@ else
 end
 
 return records
-```
-
-# Installation
-
-```ruby
-gem 'active_record_simple_execute'
-```
-
-# Usage
-
-```ruby
-### Example with plain SQL String
-sql = <<~SQL.squish
-  SELECT * 
-  FROM orders 
-  WHERE orders.foo = 'bar'
-SQL
-
-results = ActiveRecord::Base.simple_execute(sql_str)
-
-### Example with ActiveRecord SQL Variables
-
-sql = <<~SQL.squish
-  SELECT * 
-  FROM orders 
-  WHERE orders.company_id = :company_id AND orders.updated_by_user_id = :user_id
-SQL
-
-results = ActiveRecord::Base.simple_execute(sql_str, company_id: @company.id, @user.id)
 ```
 
 # Contributing
