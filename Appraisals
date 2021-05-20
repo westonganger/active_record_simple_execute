@@ -1,4 +1,4 @@
-["sqlite3"].each do |db_gem|
+["sqlite3", "mysql2", "pg"].each do |db_gem|
 
   appraise "rails_6.1.#{db_gem}" do
     gem "rails", "~> 6.1.1"

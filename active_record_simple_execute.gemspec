@@ -1,6 +1,8 @@
+require_relative 'lib/active_record_simple_execute/version'
+
 Gem::Specification.new do |s|
   s.name          = "active_record_simple_execute"
-  s.version       = "1.0.0"
+  s.version       = ActiveRecordSimpleExecute::VERSION
   s.authors       = ["Weston Ganger"]
   s.email         = ["weston@westonganger.com"]
 
@@ -27,5 +29,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'rails'
   s.add_development_dependency 'appraisal'
-  s.add_development_dependency 'warning'
+
+  if RUBY_VERSION.to_f >= 2.4
+    s.add_development_dependency 'warning'
+  end
 end

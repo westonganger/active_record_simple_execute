@@ -6,26 +6,41 @@
 
 Sanitize and Execute your raw SQL queries in ActiveRecord and Rails with a much more intuitive and shortened syntax.
 
-# Comparison
+## Comparison with Plain ActiveRecord
 
-**Simple Execute**
+As seen here using `simple_execute` is much easier to remember than all the hoops plain ActiveRecord makes you jump through.
+
+**Using Simple Execute**
 ```ruby
-results = ActiveRecord::Base.simple_execute(sql_str, company_id: @company.id, @user.id)
+records = ActiveRecord::Base.simple_execute(sql_str, company_id: @company.id, @user.id)
 ```
 
-**Stock ActiveRecord Syntax**
+**Using Plain ActiveRecord Syntax**
 ```ruby
-sql = ActiveRecord::Base.sanitize_sql_array(
-  [
-    sql_str, 
-    company_id: @company.id,
-    user_id: @user.id,
-  ]
-)
+### must use send because this method is private is Rails 5.1 only, Public in 5.0 and 5.2
+sanitized_sql = ActiveRecord::Base.sanitize_sql_array([sql_str, **sql_vars])
 
-results = ActiveRecord::Base.execute(sql)
+results = ActiveRecord::Base.connection.execute(sanitized_sql)
 
-results = results || []
+if defined?(PG::Result) && results.is_a?(PG::Result)
+  records = results.to_a
+elsif defined?(Mysql2::Result) && results.is_a?(Mysql2::Result)
+  records = []
+
+  results.each do |row|
+    h = {}
+
+    results.fields.each_with_index do |field,i|
+      h[field] = row[i]
+    end
+
+    records << h
+  end
+else
+  records = results
+end
+
+return records
 ```
 
 # Installation
@@ -37,7 +52,7 @@ gem 'active_record_simple_execute'
 # Usage
 
 ```ruby
-### WITHOUT SQL VARIABLES
+### Example with plain SQL String
 sql = <<~SQL.squish
   SELECT * 
   FROM orders 
@@ -46,7 +61,7 @@ SQL
 
 results = ActiveRecord::Base.simple_execute(sql_str)
 
-### WITH sql variables
+### Example with ActiveRecord SQL Variables
 
 sql = <<~SQL.squish
   SELECT * 
@@ -57,14 +72,14 @@ SQL
 results = ActiveRecord::Base.simple_execute(sql_str, company_id: @company.id, @user.id)
 ```
 
-## Contributing
-
-For quicker feedback during gem development or debugging feel free to use the provided `rake console` task. It is defined within the [`Rakefile`](./Rakefile).
+# Contributing
 
 We test multiple versions of `Rails` using the `appraisal` gem. Please use the following steps to test using `appraisal`.
 
 1. `bundle exec appraisal install`
 2. `bundle exec appraisal rake test`
+
+For quicker feedback during gem development or debugging feel free to use the provided `rake console` task. It is defined within the [`Rakefile`](./Rakefile).
 
 # Credits
 

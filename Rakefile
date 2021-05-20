@@ -1,3 +1,5 @@
+require_relative "lib/active_record_simple_execute/version"
+
 require "bundler/gem_tasks"
 require "rake/testtask"
 

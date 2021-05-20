@@ -8,48 +8,56 @@ class ActiveRecordSimpleExecuteTest < ActiveSupport::TestCase
   def teardown
   end
 
-  ### TODO
+  def test_exposes_version
+    assert ActiveRecordSimpleExecute::VERSION.is_a?(String)
+  end
   
   def test_no_results
     sql = <<~SQL.squish
-      select * from orders where orders.foo = 'bar'
+      SELECT * FROM posts WHERE posts.title = 'bar'
     SQL
 
     results = ActiveRecord::Base.simple_execute(sql)
 
-    assert results.is_a?(Array)
+    assert_kind_of Array, results
 
     assert_empty results
   end
   
   def test_has_results
+    Post.create!(title: "bar")
+
     sql = <<~SQL.squish
-      select * from orders where orders.foo = 'bar'
+      SELECT * FROM posts WHERE posts.title = 'bar'
     SQL
 
     results = ActiveRecord::Base.simple_execute(sql)
 
-    assert results.is_a?(Array)
+    assert_kind_of Array, results
 
-    assert_not_empty results
+    assert_equal 1, results.size
 
-    assert results.first.is_a?(HashWithIndifferentAccess)
+    assert_kind_of Hash, results.first
 
-    assert results.first["foo"].present?
+    assert_equal "bar", results.first["title"]
   end
   
   def test_with_sql_vars
+    Post.create!(title: "bar")
+
     sql = <<~SQL.squish
-      select * from orders where orders.foo = 'bar'
+      SELECT * FROM posts WHERE posts.title = :title
     SQL
 
-    results = ActiveRecord::Base.simple_execute(sql)
+    results = ActiveRecord::Base.simple_execute(sql, title: "bar")
 
-    assert results.is_a?(Array)
+    assert_kind_of Array, results
 
-    assert_not_empty results
+    assert_equal 1, results.size
 
-    assert results.first["bar"].present?
+    assert_kind_of Hash, results.first
+
+    assert_equal "bar", results.first["title"]
   end
 
 end
