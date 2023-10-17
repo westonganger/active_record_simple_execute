@@ -20,7 +20,7 @@ As seen here using `simple_execute` is much easier to remember than all the hoop
 ```ruby
 sql_str = <<~SQL.squish
   SELECT * FROM orders
-  FROM orders 
+  FROM orders
   WHERE orders.company_id = :company_id AND orders.updated_by_user_id = :user_id
 SQL
 
@@ -30,8 +30,8 @@ records = ActiveRecord::Base.simple_execute(sql_str, company_id: @company.id, us
 ### Using Plain ActiveRecord Syntax
 ```ruby
 sql_str = <<~SQL.squish
-  SELECT * 
-  FROM orders 
+  SELECT *
+  FROM orders
   WHERE orders.company_id = :company_id AND orders.updated_by_user_id = :user_id
 SQL
 
@@ -61,12 +61,19 @@ end
 return records
 ```
 
-# Contributing
+# Testing
 
-We test multiple versions of `Rails` using the `appraisal` gem. Please use the following steps to test using `appraisal`.
+```
+bundle exec rake test
+```
 
-1. `bundle exec appraisal install`
-2. `bundle exec appraisal rake test`
+We can locally test different versions of Rails using `ENV['RAILS_VERSION']`
+
+```
+export RAILS_VERSION=7.0
+bundle install
+bundle exec rake test
+```
 
 For quicker feedback during gem development or debugging feel free to use the provided `rake console` task. It is defined within the [`Rakefile`](./Rakefile).
 
