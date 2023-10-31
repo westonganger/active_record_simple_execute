@@ -1,7 +1,7 @@
 # ActiveRecord Simple Execute
 
 <a href="https://badge.fury.io/rb/active_record_simple_execute" target="_blank"><img height="21" style='border:0px;height:21px;' border='0' src="https://badge.fury.io/rb/active_record_simple_execute.svg" alt="Gem Version"></a>
-<a href='https://github.com/westonganger/active_record_simple_execute/actions' target='_blank'><img src="https://github.com/westonganger/active_record_simple_execute/workflows/Tests/badge.svg" style="max-width:100%;" height='21' style='border:0px;height:21px;' border='0' alt="CI Status"></a>
+<a href='https://github.com/westonganger/active_record_simple_execute/actions' target='_blank'><img src="https://github.com/westonganger/active_record_simple_execute/actions/workflows/test.yml/badge.svg?branch=master" style="max-width:100%;" height='21' style='border:0px;height:21px;' border='0' alt="CI Status"></a>
 <a href='https://rubygems.org/gems/active_record_simple_execute' target='_blank'><img height='21' style='border:0px;height:21px;' src='https://img.shields.io/gem/dt/active_record_simple_execute?color=brightgreen&label=Rubygems%20Downloads' border='0' alt='RubyGems Downloads' /></a>
 
 Sanitize and Execute your raw SQL queries in ActiveRecord and Rails with a much more intuitive and shortened syntax.
