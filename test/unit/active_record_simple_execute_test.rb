@@ -157,4 +157,28 @@ class ActiveRecordSimpleExecuteTest < ActiveSupport::TestCase
     assert_equal Post.all.size, 0
   end
 
+  def test_activerecord_base_method
+    Post.create!(title: "bar")
+
+    sql = <<~SQL.squish
+      SELECT * FROM posts WHERE posts.title = 'bar'
+    SQL
+
+    results = ActiveRecord::Base.simple_execute(sql)
+
+    assert_equal 1, results.size
+  end
+
+  def test_connection_method
+    Post.create!(title: "bar")
+
+    sql = <<~SQL.squish
+      SELECT * FROM posts WHERE posts.title = 'bar'
+    SQL
+
+    results = ActiveRecord::Base.connection.simple_execute(sql)
+
+    assert_equal 1, results.size
+  end
+
 end

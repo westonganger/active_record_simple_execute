@@ -4,11 +4,11 @@ require "active_support/lazy_load_hooks"
 
 ActiveSupport.on_load(:active_record) do
 
-  ActiveRecord::Base.class_eval do
-    def self.simple_execute(sql_str, **sql_vars)
+  ActiveRecord::ConnectionAdapters::DatabaseStatements.module_eval do
+    def simple_execute(sql_str, **sql_vars)
       sanitized_sql = ActiveRecord::Base.sanitize_sql_array([sql_str, **sql_vars])
 
-      results = ActiveRecord::Base.connection.execute(sanitized_sql)
+      results = self.execute(sanitized_sql)
 
       if defined?(PG::Result) && results.is_a?(PG::Result)
         records = results.to_a
@@ -29,6 +29,12 @@ ActiveSupport.on_load(:active_record) do
       end
 
       return records
+    end
+  end
+
+  ActiveRecord::Base.class_eval do
+    def self.simple_execute(sql_str, **sql_vars)
+      self.connection.simple_execute(sql_str, **sql_vars)
     end
   end
 

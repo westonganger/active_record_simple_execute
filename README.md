@@ -24,7 +24,9 @@ sql_str = <<~SQL.squish
   WHERE orders.company_id = :company_id AND orders.updated_by_user_id = :user_id
 SQL
 
-records = ActiveRecord::Base.simple_execute(sql_str, company_id: @company.id, user_id: @user.id)
+records = ActiveRecord::Base.connection.simple_execute(sql_str, company_id: @company.id, user_id: @user.id)
+# OR use the convenience method excluding the connection portion
+# ActiveRecord::Base.simple_execute(...)
 ```
 
 ### Using Plain ActiveRecord Syntax
