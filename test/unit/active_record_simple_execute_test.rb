@@ -86,7 +86,11 @@ class ActiveRecordSimpleExecuteTest < ActiveSupport::TestCase
 
     results = ActiveRecord::Base.simple_execute(sql, old_title: "some-old-title", new_title: "some-new-title")
 
-    assert_equal results, []
+    if mysql?
+      assert_equal results, nil
+    else
+      assert_equal results, []
+    end
 
     assert_equal Post.where(title: "some-new-title").size, 1
   end
@@ -123,7 +127,11 @@ class ActiveRecordSimpleExecuteTest < ActiveSupport::TestCase
 
     results = ActiveRecord::Base.simple_execute(sql, title: "bar")
 
-    assert_equal results, []
+    if mysql?
+      assert_equal results, nil
+    else
+      assert_equal results, []
+    end
 
     assert_equal Post.all.size, 0
   end
