@@ -35,7 +35,6 @@ sql_str = <<~SQL.squish
   WHERE orders.company_id = :company_id AND orders.updated_by_user_id = :user_id
 SQL
 
-### must use send because this method is private is Rails 5.1 only, Public in 5.0 and 5.2
 sanitized_sql = ActiveRecord::Base.sanitize_sql_array([sql_str, company_id: @company.id, user_id: @user.id])
 
 results = ActiveRecord::Base.connection.execute(sanitized_sql)

@@ -6,8 +6,7 @@ ActiveSupport.on_load(:active_record) do
 
   ActiveRecord::Base.class_eval do
     def self.simple_execute(sql_str, **sql_vars)
-      ### must use send because this method is private is Rails 5.1 only, Public in 5.0 and 5.2
-      sanitized_sql = ActiveRecord::Base.send(:sanitize_sql_array, [sql_str, **sql_vars])
+      sanitized_sql = ActiveRecord::Base.sanitize_sql_array([sql_str, **sql_vars])
 
       results = ActiveRecord::Base.connection.execute(sanitized_sql)
 

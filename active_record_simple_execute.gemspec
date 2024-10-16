@@ -17,13 +17,10 @@ Gem::Specification.new do |s|
   s.files = Dir.glob("{lib/**/*}") + %w{ LICENSE README.md Rakefile CHANGELOG.md }
   s.require_path = 'lib'
 
-  s.add_runtime_dependency "activerecord", ">= 3.2"
+  s.add_runtime_dependency "activerecord", ">= 5.2"
 
   s.add_development_dependency "rake"
   s.add_development_dependency "minitest"
   s.add_development_dependency 'minitest-reporters'
-
-  if RUBY_VERSION.to_f >= 2.4
-    s.add_development_dependency 'warning'
-  end
+  s.add_development_dependency 'warning'
 end
