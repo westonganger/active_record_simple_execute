@@ -21,7 +21,7 @@ class ActiveRecordSimpleExecuteTest < ActiveSupport::TestCase
       SELECT * FROM posts WHERE posts.title = 'bar'
     SQL
 
-    results = ActiveRecord::Base.simple_execute(sql)
+    results = ActiveRecord::Base.connection.simple_execute(sql)
 
     assert_kind_of Array, results
 
@@ -35,7 +35,7 @@ class ActiveRecordSimpleExecuteTest < ActiveSupport::TestCase
       SELECT * FROM posts WHERE posts.title = 'bar'
     SQL
 
-    results = ActiveRecord::Base.simple_execute(sql)
+    results = ActiveRecord::Base.connection.simple_execute(sql)
 
     assert_kind_of Array, results
 
@@ -53,7 +53,7 @@ class ActiveRecordSimpleExecuteTest < ActiveSupport::TestCase
       SELECT * FROM posts WHERE posts.title = :title
     SQL
 
-    results = ActiveRecord::Base.simple_execute(sql, title: "bar")
+    results = ActiveRecord::Base.connection.simple_execute(sql, title: "bar")
 
     assert_kind_of Array, results
 
@@ -86,11 +86,7 @@ class ActiveRecordSimpleExecuteTest < ActiveSupport::TestCase
 
     results = ActiveRecord::Base.simple_execute(sql, old_title: "some-old-title", new_title: "some-new-title")
 
-    if mysql?
-      assert_equal results, nil
-    else
-      assert_equal results, []
-    end
+    assert_equal results, []
 
     assert_equal Post.where(title: "some-new-title").size, 1
   end
@@ -127,11 +123,7 @@ class ActiveRecordSimpleExecuteTest < ActiveSupport::TestCase
 
     results = ActiveRecord::Base.simple_execute(sql, title: "bar")
 
-    if mysql?
-      assert_equal results, nil
-    else
-      assert_equal results, []
-    end
+    assert_equal results, []
 
     assert_equal Post.all.size, 0
   end

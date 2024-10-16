@@ -9,14 +9,14 @@ Sanitize and Execute your raw SQL queries in ActiveRecord and Rails with a much 
 # Installation
 
 ```ruby
-gem 'active_record_simple_execute'
+gem "active_record_simple_execute"
 ```
 
 ## Comparison with Plain ActiveRecord
 
 As seen here using `simple_execute` is much easier to remember than all the hoops plain ActiveRecord makes you jump through.
 
-### Using Simple Execute
+### Using `simple_execute`
 ```ruby
 sql_str = <<~SQL.squish
   SELECT * FROM orders
@@ -29,7 +29,7 @@ records = ActiveRecord::Base.connection.simple_execute(sql_str, company_id: @com
 # ActiveRecord::Base.simple_execute(...)
 ```
 
-### Using Plain ActiveRecord Syntax
+### Using original ActiveRecord `exec_query` method
 ```ruby
 sql_str = <<~SQL.squish
   SELECT *
@@ -39,24 +39,47 @@ SQL
 
 sanitized_sql = ActiveRecord::Base.sanitize_sql_array([sql_str, company_id: @company.id, user_id: @user.id])
 
-results = ActiveRecord::Base.connection.execute(sanitized_sql)
+result = ActiveRecord::Base.connection.exec_query(sanitized_sql)
 
-if defined?(PG::Result) && results.is_a?(PG::Result)
-  records = results.to_a
-elsif defined?(Mysql2::Result) && results.is_a?(Mysql2::Result)
+records = result.to_a
+
+return records
+```
+
+### Using original ActiveRecord `execute` method
+```ruby
+sql_str = <<~SQL.squish
+  SELECT *
+  FROM orders
+  WHERE orders.company_id = :company_id AND orders.updated_by_user_id = :user_id
+SQL
+
+sanitized_sql = ActiveRecord::Base.sanitize_sql_array([sql_str, company_id: @company.id, user_id: @user.id])
+
+result = ActiveRecord::Base.connection.execute(sanitized_sql)
+# OR
+result = ActiveRecord::Base.connection.exec_query(sanitized_sql)
+
+if defined?(PG::Result) && result.is_a?(PG::Result)
+  records = result.to_a
+
+  result.clear # to prevent memory leak
+
+elsif defined?(Mysql2::Result) && result.is_a?(Mysql2::Result)
   records = []
 
-  results.each do |row|
+  result.each do |row|
     h = {}
 
-    results.fields.each_with_index do |field,i|
+    result.fields.each_with_index do |field,i|
       h[field] = row[i]
     end
 
     records << h
   end
+
 else
-  records = results
+  records = result
 end
 
 return records
