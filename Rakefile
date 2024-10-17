@@ -10,12 +10,3 @@ Rake::TestTask.new(:test) do |t|
 end
 
 task default: [:test]
-
-task :console do
-  require 'active_record_simple_execute'
-
-  require 'test/dummy_app/app/models/post'
-
-  require 'irb'
-  binding.irb
-end

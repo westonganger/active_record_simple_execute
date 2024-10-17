@@ -4,6 +4,7 @@ CHANGELOG
 - Unreleased - [View Diff](https://github.com/westonganger/active_record_simple_execute/compare/v0.9.1...master)
   * [#8](https://github.com/westonganger/active_record_simple_execute/pull/8) - Allow usage with different Active Record database connections
   * [#7](https://github.com/westonganger/active_record_simple_execute/pull/7) - Drop support for Rails 5.1 and below
+  * [#5](https://github.com/westonganger/active_record_simple_execute/pull/5) - Switch from using Active Record `execute` method to `exec_query` method for better memory management
 
 - v0.9.1 - Feb 13, 2023 - [View Diff](https://github.com/westonganger/active_record_simple_execute/compare/v0.9.0...v0.9.1)
   * [#1](https://github.com/westonganger/active_record_simple_execute/pull/1) - Utilize active_record lazy loading
