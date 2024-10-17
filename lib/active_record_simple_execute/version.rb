@@ -1,5 +1,3 @@
 module ActiveRecordSimpleExecute
-
-  VERSION = "0.9.1".freeze
-
+  VERSION = "1.0.0".freeze
 end
