@@ -3,7 +3,7 @@ require File.expand_path('../boot', __FILE__)
 begin
   require 'warning'
   Warning.ignore(
-    %r{mail/parsers/address_lists_parser}, ### Hide mail gem warnings
+    %r{mail/parsers}, ### Hide mail gem warnings
   )
 rescue LoadError
   # Do nothing

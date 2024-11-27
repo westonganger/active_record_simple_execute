@@ -29,7 +29,7 @@ records = ActiveRecord::Base.connection.simple_execute(sql_str, company_id: @com
 # ActiveRecord::Base.simple_execute(...)
 ```
 
-### Using original ActiveRecord `exec_query` method
+### Using original ActiveRecord `select_all` or `exec_query` method
 ```ruby
 sql_str = <<~SQL.squish
   SELECT *
@@ -37,16 +37,24 @@ sql_str = <<~SQL.squish
   WHERE orders.company_id = :company_id AND orders.updated_by_user_id = :user_id
 SQL
 
-sanitized_sql = ActiveRecord::Base.sanitize_sql_array([sql_str, company_id: @company.id, user_id: @user.id])
+### FOR READ OPERATIONS
+sanitized_sql = Arel.sql(sql_str, company_id: @company.id, user_id: @user.id)
+result = ActiveRecord::Base.connection.select_all(sanitized_sql)
 
-result = ActiveRecord::Base.connection.exec_query(sanitized_sql)
+### OR FOR WRITE OPERATIONS (you probably shouldnt be doing this anyways)
+### (while exec_query is capable of read & write operations, recommended only for write operations as it affects the query cache)
+sanitized_sql = ActiveRecord::Base.sanitize_sql_array([sql_str, {company_id: @company.id, user_id: @user.id}]) # Must use sanitize_sql_array, since Arel.sql is not yet compatible with `exec_query`
+result = ActiveRecord::Base.connection.exec_query(sanitized_sql) # recommended only for write operations as it affects the query cache
 
-records = result.to_a
+records = result.to_a # convert the ActiveRecord::Result object into an array of hashes
 
 return records
 ```
 
 ### Using original ActiveRecord `execute` method
+
+It should be noted that it is recommended to avoid all usage of `execute` and to instead use `select_all` or `exec_query` which returns generic ActiveRecord::Result objects
+
 ```ruby
 sql_str = <<~SQL.squish
   SELECT *
@@ -54,11 +62,10 @@ sql_str = <<~SQL.squish
   WHERE orders.company_id = :company_id AND orders.updated_by_user_id = :user_id
 SQL
 
-sanitized_sql = ActiveRecord::Base.sanitize_sql_array([sql_str, company_id: @company.id, user_id: @user.id])
+# Must use sanitize_sql_array, since Arel.sql is not yet compatible with `execute`
+sanitized_sql = ActiveRecord::Base.sanitize_sql_array([sql_str, {company_id: @company.id, user_id: @user.id}])
 
 result = ActiveRecord::Base.connection.execute(sanitized_sql)
-# OR
-result = ActiveRecord::Base.connection.exec_query(sanitized_sql)
 
 if defined?(PG::Result) && result.is_a?(PG::Result)
   records = result.to_a

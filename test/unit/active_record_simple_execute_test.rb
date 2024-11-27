@@ -70,7 +70,7 @@ class ActiveRecordSimpleExecuteTest < ActiveSupport::TestCase
       VALUES (:title, :created_at, :updated_at)
     SQL
 
-    results = ActiveRecord::Base.simple_execute(sql, title: "some-new-title", created_at: Time.now, updated_at: Time.now)
+    ActiveRecord::Base.simple_execute(sql, title: "some-new-title", created_at: Time.now, updated_at: Time.now)
 
     assert_equal Post.where(title: "some-new-title").size, 1
   end

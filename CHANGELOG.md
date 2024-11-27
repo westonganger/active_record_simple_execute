@@ -2,7 +2,7 @@ CHANGELOG
 ---------
 
 - Unreleased - [View Diff](https://github.com/westonganger/active_record_simple_execute/compare/v1.0.0...master)
-  * Nothing yet
+  * [#9](https://github.com/westonganger/active_record_simple_execute/pull/9) - Automatically switch between `select_all` and `exec_query` based on if query is read or write, update readme examples with new knowledge around `Arel.sql` vs `sanitize_sql_array`
 
 - v1.0.0 - Oct 17, 2024 - [View Diff](https://github.com/westonganger/active_record_simple_execute/compare/v0.9.1...v1.0.0)
   * [#8](https://github.com/westonganger/active_record_simple_execute/pull/8) - Allow usage with different Active Record database connections
