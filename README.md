@@ -6,6 +6,8 @@
 
 Sanitize and Execute your raw SQL queries in ActiveRecord and Rails with a much more intuitive and shortened syntax.
 
+This gem is in response to a lack of proper documentation of best practices within Rails - I've [created a documentation PR](https://github.com/rails/rails/pull/53719) to resolve this but until this this is merged this gem seems necessary for the eco-system.
+
 # Installation
 
 ```ruby
